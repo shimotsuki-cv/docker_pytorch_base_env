@@ -1,0 +1,47 @@
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
+
+ARG CONDAENV_VERSION
+ARG CONDAENV_NAME
+
+# 必要なライブラリをインストール（追加はお好みで）
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Tokyo
+RUN apt update \
+  && apt update \
+  && apt install -y wget vim sudo zip \
+  && apt install -y git \
+  && apt -y autoremove \
+  && apt -y clean \
+  && apt -y autoclean \
+  && rm -rf /var/lib/apt/lists/*  
+
+# CUDAのパスを設定
+ENV CUDA_ROOT /usr/local/cuda
+ENV PATH $PATH:$CUDA_ROOT/bin
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$CUDA_ROOT/lib64:$CUDA_ROOT/lib:/usr/local/nvidia/lib64:/usr/local/nvidia/lib
+ENV LIBRARY_PATH /usr/local/nvidia/lib64:/usr/local/nvidia/lib:/usr/local/cuda/lib64/stubs:/usr/local/cuda/lib64:/usr/local/cuda/lib$LIBRARY_PATH
+
+# ユーザの追加と設定
+ENV USER_NAME=user
+RUN adduser --disabled-password --gecos '' $USER_NAME \
+  && adduser $USER_NAME sudo \
+  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+COPY entrypoint.sh /home/$USER_NAME
+COPY sanmple_environment_for_miniconda.yaml /home/$USER_NAME
+USER $USER_NAME
+WORKDIR /home/$USER_NAME
+
+# Anacondaをインストール
+RUN wget https://repo.anaconda.com/miniconda/${CONDAENV_VERSION}.sh \
+  && bash ${CONDAENV_VERSION}.sh -b -p /home/$USER_NAME/.miniconda3 \
+  && rm -r ${CONDAENV_VERSION}.sh
+# Anacondaの仮想環境を構築
+ENV PATH $PATH:/home/$USER_NAME/.miniconda3/bin
+RUN conda env create -n ${CONDAENV_NAME} -f sanmple_environment_for_miniconda.yaml \
+  && conda init \
+  && echo "conda activate ${CONDAENV_NAME}" >> ~/.bashrc
+
+ENV CONDA_DEFAULT_ENV ${CONDAENV_NAME}
+ENV PATH $PATH:/home/$USER_NAME/conda/envs/${CONDAENV_NAME}/bin
+
+CMD ["/bin/bash"]

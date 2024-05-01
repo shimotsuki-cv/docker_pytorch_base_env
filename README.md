@@ -1,1 +1,2 @@
-# docker_pytorch_base_env
+# pytorch_docker_base_env
+Dockerを用いたPyTorchの基本的な実行環境構築

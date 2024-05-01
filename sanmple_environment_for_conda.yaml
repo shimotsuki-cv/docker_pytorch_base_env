@@ -1,0 +1,15 @@
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - torchvision
+  - pytorch
+  - pytorch-cuda=12.1
+  - tensorboard
+  - scipy
+  - opencv
+  - tqdm
+  - matplotlib
+  - pyyaml

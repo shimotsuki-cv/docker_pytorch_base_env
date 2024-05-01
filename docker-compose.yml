@@ -1,0 +1,27 @@
+services:
+  sample:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_pip
+      args:
+        - PIPENV_PYTHON_VERSION=3.9
+        - CONDAENV_VERSION=Miniconda3-latest-Linux-x86_64
+        - CONDAENV_NAME=torch
+    image: sample/torch
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+    command: >
+      bash -c " source /home/user/entrypoint.sh && /bin/bash "
+    environment:
+      - USER_ID=1000    # 自分のユーザID
+      - GROUP_ID=1000   # 自分のグループID
+      - DISPLAY=$DISPLAY
+    shm_size: '16gb'
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
