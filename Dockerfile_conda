@@ -8,8 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Tokyo
 RUN apt update \
   && apt update \
-  && apt install -y wget vim sudo zip \
-  && apt install -y git \
+  && apt install -y wget vim sudo zip git \
   && apt -y autoremove \
   && apt -y clean \
   && apt -y autoclean \
@@ -27,7 +26,7 @@ RUN adduser --disabled-password --gecos '' $USER_NAME \
   && adduser $USER_NAME sudo \
   && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 COPY entrypoint.sh /home/$USER_NAME
-COPY sanmple_environment_for_miniconda.yaml /home/$USER_NAME
+COPY sanmple_environment_for_conda.yaml /home/$USER_NAME
 USER $USER_NAME
 WORKDIR /home/$USER_NAME
 
@@ -35,7 +34,7 @@ WORKDIR /home/$USER_NAME
 RUN wget https://repo.anaconda.com/miniconda/${CONDAENV_VERSION}.sh \
   && bash ${CONDAENV_VERSION}.sh -b -p /home/$USER_NAME/.miniconda3 \
   && rm -r ${CONDAENV_VERSION}.sh
-# Anacondaの仮想環境を構築
+# Anacondaで仮想環境を構築
 ENV PATH $PATH:/home/$USER_NAME/.miniconda3/bin
 RUN conda env create -n ${CONDAENV_NAME} -f sanmple_environment_for_miniconda.yaml \
   && conda init \
