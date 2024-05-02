@@ -36,7 +36,7 @@ RUN wget https://repo.anaconda.com/miniconda/${CONDAENV_VERSION}.sh \
   && rm -r ${CONDAENV_VERSION}.sh
 # Anacondaで仮想環境を構築
 ENV PATH $PATH:/home/$USER_NAME/.miniconda3/bin
-RUN conda env create -n ${CONDAENV_NAME} -f sanmple_environment_for_miniconda.yaml \
+RUN conda env create -n ${CONDAENV_NAME} -f sanmple_environment_for_conda.yaml \
   && conda init \
   && echo "conda activate ${CONDAENV_NAME}" >> ~/.bashrc
 
