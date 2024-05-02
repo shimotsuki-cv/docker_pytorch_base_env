@@ -9,7 +9,7 @@ RUN apt update \
   && apt install -y software-properties-common \ 
   && add-apt-repository ppa:deadsnakes/ppa \
   && apt update \
-  && apt install -y vim sudo zip curl \
+  && apt install -y vim sudo zip curl git \
                     python${PIPENV_PYTHON_VERSION} \
                     python${PIPENV_PYTHON_VERSION}-dev \
                     python${PIPENV_PYTHON_VERSION}-distutils \
@@ -17,7 +17,6 @@ RUN apt update \
   && ln -s /usr/bin/python${PIPENV_PYTHON_VERSION} /usr/bin/python3 \
   && ln -s /usr/bin/python3 /usr/bin/python \
   && curl -sS https://bootstrap.pypa.io/get-pip.py | python3 \
-  && apt install -y git \
   && apt -y autoremove \
   && apt -y clean \
   && apt -y autoclean \
