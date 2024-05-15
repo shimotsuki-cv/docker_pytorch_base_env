@@ -1,6 +1,6 @@
 FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
 
-ARG PIPENV_PYTHON_VERSION
+ENV PIPENV_PYTHON_VERSION 3.12
 
 # 必要なライブラリをインストール（追加はお好みで）
 ENV DEBIAN_FRONTEND=noninteractive
