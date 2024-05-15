@@ -1,7 +1,7 @@
 FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
 
-ARG CONDAENV_VERSION
-ARG CONDAENV_NAME
+ENV CONDAENV_VERSION "Miniconda3-latest-Linux-x86_64"
+ENV CONDAENV_NAME "torch"
 
 # 必要なライブラリをインストール（追加はお好みで）
 ENV DEBIAN_FRONTEND=noninteractive
@@ -32,15 +32,15 @@ WORKDIR /home/$USER_NAME
 
 # Anacondaをインストール
 RUN wget https://repo.anaconda.com/miniconda/${CONDAENV_VERSION}.sh \
-  && bash ${CONDAENV_VERSION}.sh -b -p /home/$USER_NAME/.miniconda3 \
+  && bash ${CONDAENV_VERSION}.sh -b -p /home/$USER_NAME/.conda \
   && rm -r ${CONDAENV_VERSION}.sh
 # Anacondaで仮想環境を構築
-ENV PATH $PATH:/home/$USER_NAME/.miniconda3/bin
+ENV PATH $PATH:/home/$USER_NAME/.conda/bin
 RUN conda env create -n ${CONDAENV_NAME} -f sanmple_environment_for_conda.yaml \
   && conda init \
   && echo "conda activate ${CONDAENV_NAME}" >> ~/.bashrc
 
 ENV CONDA_DEFAULT_ENV ${CONDAENV_NAME}
-ENV PATH $PATH:/home/$USER_NAME/conda/envs/${CONDAENV_NAME}/bin
+ENV PATH $PATH:/home/$USER_NAME/.conda/envs/${CONDAENV_NAME}/bin
 
 CMD ["/bin/bash"]
